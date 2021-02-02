@@ -25,7 +25,7 @@ const IndexPage = props => {
     const { data } = props
     return (
         <section>
-            <SEO title="Home" />
+            <SEO title="All Books" />
             {data.allBook.nodes.map(
                 ({ id, title, summary, localImage, author }) => (
                     <BookItem

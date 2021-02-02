@@ -70,7 +70,6 @@ const Header = ({ siteTitle }) => {
             .then(() => navigate("/login"))
             .catch(err => console.error({ err }))
     }
-    console.log({ loading, user, firebase })
 
     return (
         <HeaderWrapper>

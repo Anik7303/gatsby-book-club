@@ -9,4 +9,4 @@ const ErrorMessage = styled.span`
     border: 1px solid rgb(255, 30, 30);
 `
 
-export default ErrorMessage
+export {ErrorMessage}

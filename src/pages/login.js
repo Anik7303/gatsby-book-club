@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react"
 import { navigate } from "gatsby"
 
+import SEO from "../components/seo"
 import { Form, Input, Button, ErrorMessage } from "../components/common"
 import { FirebaseContext } from "../components/Firebase"
 
@@ -47,31 +48,34 @@ const Login = () => {
     }
 
     return (
-        <section>
-            <Form onSubmit={handleSubmit}>
-                {error && <ErrorMessage>{error}</ErrorMessage>}
-                <Input
-                    name="email"
-                    type="email"
-                    placeholder="Email Address"
-                    value={email}
-                    onChange={handleInputChange}
-                    required
-                />
-                <Input
-                    name="password"
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={handleInputChange}
-                    minLength={8}
-                    required
-                />
-                <Button type="submit" block>
-                    Login
-                </Button>
-            </Form>
-        </section>
+        <>
+            <SEO title="Login" />
+            <section>
+                <Form onSubmit={handleSubmit}>
+                    {error && <ErrorMessage>{error}</ErrorMessage>}
+                    <Input
+                        name="email"
+                        type="email"
+                        placeholder="Email Address"
+                        value={email}
+                        onChange={handleInputChange}
+                        required
+                    />
+                    <Input
+                        name="password"
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={handleInputChange}
+                        minLength={8}
+                        required
+                    />
+                    <Button type="submit" block>
+                        Login
+                    </Button>
+                </Form>
+            </section>
+        </>
     )
 }
 

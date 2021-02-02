@@ -16,7 +16,19 @@ class Firebase {
         this.storage = app.storage()
     }
 
-    getProfile = async ({ userId }) =>
+    subscribeToComments = ({
+        bookId,
+        onSnapshot,
+        onError = err => console.error(err),
+    }) => {
+        const bookRef = this.db.collection("books").doc(bookId)
+        return this.db
+            .collection("comments")
+            .where("book", "==", bookRef)
+            .onSnapshot(onSnapshot, onError)
+    }
+
+    getProfile = ({ userId }) =>
         this.db.collection("profiles").where("userId", "==", userId).get()
 
     register = async ({ username, email, password }) => {
@@ -30,7 +42,7 @@ class Firebase {
             .set({ userId: newUser.user.uid })
     }
 
-    login = async ({ email, password }) =>
+    login = ({ email, password }) =>
         this.auth.signInWithEmailAndPassword(email, password)
 
     logout = () => this.auth.signOut()

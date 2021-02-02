@@ -1,7 +1,9 @@
 import React from "react"
 import { graphql } from "gatsby"
 
+import SEO from "../seo"
 import BookItem from "./BookItem"
+import Comments from "../Comments"
 
 const Book = props => {
     const {
@@ -11,14 +13,18 @@ const Book = props => {
     } = props
 
     return (
-        <section>
-            <BookItem
-                title={title}
-                summary={summary}
-                imageUrl={localImage.childImageSharp.fixed}
-                author={author.name}
-            />
-        </section>
+        <>
+            <SEO title={title} />
+            <section>
+                <BookItem
+                    title={title}
+                    summary={summary}
+                    imageUrl={localImage.childImageSharp.fixed}
+                    author={author.name}
+                />
+                <Comments bookId={props.pageContext.bookId} />
+            </section>
+        </>
     )
 }
 
