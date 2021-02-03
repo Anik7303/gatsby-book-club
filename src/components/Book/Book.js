@@ -3,7 +3,7 @@ import { graphql } from "gatsby"
 
 import SEO from "../seo"
 import BookItem from "./BookItem"
-import Comments from "../Comments"
+import Comments from "../Comments/Comments"
 
 const Book = props => {
     const {
