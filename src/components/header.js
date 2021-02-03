@@ -64,6 +64,8 @@ const Divider = styled.span`
 const Header = ({ siteTitle }) => {
     const { firebase, user, loading } = useContext(FirebaseContext)
 
+    console.log({ user, loading })
+
     const handleLogoutClick = () => {
         firebase
             .logout()

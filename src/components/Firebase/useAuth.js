@@ -14,18 +14,22 @@ const useAuth = () => {
         const firebaseInstance = getFirebaseInstance()
         setFirebase(firebaseInstance)
 
-        firebaseInstance.auth.onAuthStateChanged(userResult => {
+        unsubscribe = firebaseInstance.auth.onAuthStateChanged(userResult => {
             if (userResult) {
-                firebaseInstance
-                    .getProfile({ userId: userResult.uid })
-                    .then(result => {
+                profileUnsubscribe = firebaseInstance.getProfile({
+                    userId: userResult.uid,
+                    onSnapshot: snapshot => {
+                        console.log({ snapshot, userResult })
                         setUser({
-                            ...userResult,
-                            username: result.empty ? null : result.docs[0].id,
+                            uid: userResult.uid,
+                            email: userResult.email,
+                            username: snapshot.empty
+                                ? null
+                                : snapshot.docs[0].id,
                         })
                         setLoading(false)
-                    })
-                    .catch(err => console.error({ err }))
+                    },
+                })
             } else {
                 setUser(null)
                 setLoading(false)
