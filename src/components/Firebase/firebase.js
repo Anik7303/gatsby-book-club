@@ -2,7 +2,7 @@ import app from "firebase/app"
 import "firebase/auth"
 import "firebase/storage"
 import "firebase/firestore"
-// import "firebase/functions"
+import "firebase/functions"
 
 import config from "./config"
 
@@ -13,7 +13,45 @@ class Firebase {
         this.auth = app.auth()
         this.storage = app.storage()
         this.db = app.firestore()
-        // this.functions = app.functions()
+        this.functions = app.functions()
+    }
+
+    /*
+    // uses firebase functions
+    createBook = ({ title, summary, bookCover, authorId }) => {
+        const createBookCallable = this.functions.httpsCallable("createBook")
+        return createBookCallable({ title, summary, bookCover, authorId })
+    }
+    */
+
+    getAuthors = () => {
+        return this.db.collection("authors").get()
+    }
+
+    /*
+    // uses firebase functions
+    addAuthor = ({ name }) => {
+        const addAuthorCallable = this.functions.httpsCallable("addAuthor")
+        return addAuthorCallable({ name })
+    }
+    */
+
+    addAuthor = async ({ name }) => {
+        console.log({ auth: this.auth })
+        this.checkAuthentication(true)
+        this.dataValidation({ name }, { name: "string" })
+
+        const exists = await this.db
+            .collection("authors")
+            .where("name", "==", name)
+            .limit(1)
+            .get()
+
+        if (!exists.empty) {
+            throw new Error("This author already exists")
+        }
+
+        return this.db.collection("authors").add({ name })
     }
 
     /*
@@ -26,6 +64,8 @@ class Firebase {
     */
 
     postComment = async ({ userId, bookId, comment }) => {
+        this.checkAuthentication()
+
         const profile = await this.db
             .collection("profiles")
             .where("userId", "==", userId)
@@ -99,16 +139,43 @@ class Firebase {
         )
 
         // creates a profiles associated with the newly created user and returns the promise
+        console.log({ check: email === process.env.GATSBY_ADMIN_EMAIL, email })
         return this.db
             .collection("profiles")
             .doc(username)
-            .set({ userId: user.user.uid })
+            .set({
+                userId: user.user.uid,
+                isAdmin: email === process.env.GATSBY_ADMIN_EMAIL,
+            })
     }
 
     login = ({ email, password }) =>
         this.auth.signInWithEmailAndPassword(email, password)
 
     logout = () => this.auth.signOut()
+
+    checkAuthentication = (admin = false) => {
+        if (!this.auth.currentUser) {
+            throw new Error("You need to be signed in to access this feature")
+        }
+        if (
+            admin &&
+            this.auth.currentUser.email !== process.env.GATSBY_ADMIN_EMAIL
+        ) {
+            throw new Error("You are not authorized to access this feature")
+        }
+    }
+
+    dataValidation = (data, keyValues) => {
+        if (Object.keys(data).length !== Object.keys(keyValues).length) {
+            throw new Error("Invalid number of properties provided")
+        }
+        for (let key in data) {
+            if (!keyValues[key] || typeof data[key] !== keyValues[key]) {
+                throw new Error(`${key} contains invalid datatype`)
+            }
+        }
+    }
 }
 
 let instance

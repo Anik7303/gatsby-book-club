@@ -5,27 +5,35 @@
  */
 const path = require("path")
 
-exports.createPages = ({ graphql, actions }) => {
-    const { createPage } = actions
-    const BookComponent = path.resolve("src", "components", "Book", "Book.js")
+exports.createPages = async ({ graphql, actions }) => {
+    try {
+        const { createPage } = actions
+        const BookComponent = path.resolve(
+            "src",
+            "components",
+            "Book",
+            "Book.js"
+        )
 
-    return graphql(`
-        query {
-            allBook {
-                nodes {
-                    id
+        const { data, errors } = await graphql(`
+            query {
+                allBook {
+                    nodes {
+                        id
+                    }
                 }
             }
-        }
-    `).then(result => {
-        const { data, errors } = result
+        `)
         if (errors) throw errors
-        data.allBook.nodes.forEach(({ id }) => {
+        return data.allBook.nodes.forEach(({ id }) =>
             createPage({
                 path: `/book/${id}`,
                 component: BookComponent,
                 context: { bookId: id },
             })
-        })
-    })
+        )
+    } catch (err) {
+        console.error(err)
+        throw err
+    }
 }
