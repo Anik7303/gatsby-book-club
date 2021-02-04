@@ -45,7 +45,6 @@ const AddAuthor = () => {
         firebase
             .addAuthor({ name })
             .then(result => {
-                console.log({ result })
                 setName("")
                 setMessage("Author added successfully.")
             })

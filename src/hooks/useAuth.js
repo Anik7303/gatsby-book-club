@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react"
 
-import getFirebaseInstance from "./firebase"
+import { getFirebaseInstance } from "../components/Firebase"
 
 const useAuth = () => {
     const [user, setUser] = useState({})
     const [firebase, setFirebase] = useState(null)
     const [loading, setLoading] = useState(true)
-
-    // console.log({ firebase, user, loading })
 
     useEffect(() => {
         let unsubscribe

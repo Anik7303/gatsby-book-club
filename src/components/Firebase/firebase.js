@@ -37,7 +37,6 @@ class Firebase {
     */
 
     addAuthor = async ({ name }) => {
-        console.log({ auth: this.auth })
         this.checkAuthentication(true)
         this.dataValidation({ name }, { name: "string" })
 
@@ -139,7 +138,6 @@ class Firebase {
         )
 
         // creates a profiles associated with the newly created user and returns the promise
-        console.log({ check: email === process.env.GATSBY_ADMIN_EMAIL, email })
         return this.db
             .collection("profiles")
             .doc(username)
